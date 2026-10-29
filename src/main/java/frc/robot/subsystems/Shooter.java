@@ -19,10 +19,35 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Shooter extends SubsystemBase {
+  private SparkFlex shooterMotorController;
+  private SparkClosedLoopController;
+  private RelativeEncoder shooterEncoder;
+  private SparkFlexConfig shooterConfig;
+  private static final double IDLE_SPEED_RPM
+    public Shooter() {
+      shooterMotorController = new SparkFlex(2, MotorType.kBrushless);
+      ShooterPIDController = shooterMotorCotroller.getClosedLoopController();
+      shooterEncoder = shooterMoterController.getEncoder();
 
-  public Shooter() {}
-  
+      shooterConfig
+        .idleMode(IdleMode.kCoast)
+        .voltageCompensation(12.0)
+        .smartCurrentLimit(40);
+      
+      shooterConfig.closedLoop
+      .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+      .p(0.5).i(0).d(0)
+      .outputRange(-1,1)
+      .positionWrappingEnabled(false);
+      
+      shooterConfig.closedLoop.feedForward
+      .kV(0.2)
 
+      shooterMotorController.configure(
+        
+
+      )
+  }
 
   @Override
   public void periodic() {
