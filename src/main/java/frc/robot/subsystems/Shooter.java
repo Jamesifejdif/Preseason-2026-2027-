@@ -20,13 +20,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Shooter extends SubsystemBase {
   private SparkFlex shooterMotorController;
-  private SparkClosedLoopController;
+  private SparkClosedLoopController shooterPIDController;
   private RelativeEncoder shooterEncoder;
   private SparkFlexConfig shooterConfig;
-  private static final double IDLE_SPEED_RPM
+  private static final double IDLE_SPEED_RPM = 1000;
     public Shooter() {
       shooterMotorController = new SparkFlex(2, MotorType.kBrushless);
-      ShooterPIDController = shooterMotorCotroller.getClosedLoopController();
+      shooterPIDController = shooterMotorCotroller.getClosedLoopController();
       shooterEncoder = shooterMoterController.getEncoder();
 
       shooterConfig
@@ -43,12 +43,25 @@ public class Shooter extends SubsystemBase {
       shooterConfig.closedLoop.feedForward
       .kV(0.2)
 
-      shooterMotorController.configure(
-        
-
-      )
+      shooterMotorController.configure(shooterConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+ 
   }
+  public double getFlywheelVelocity(){
+      return shooterEncoder.getVelocity();
+  }
+  public void setDesiredFlywheelSpeed(double desiredRPM){
+    shooterPIDController.setSetpoint(desiredRPM, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
+  }
+  public void stopShooter(){
+    shooterMotorController.stopMotor();
+  }
+  public boolean isShooterIdle(){
+    double tolerance = 100;
+    return Math.abs(getFlywheelVelocity() - IDLE_SPEED_RPM) <= tolerance;
+  }
+  public void periodic(){
 
+  }
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
